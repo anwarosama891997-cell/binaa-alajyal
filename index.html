@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بناء الأجيال - لتعليم اللغة العربية والقرآن الكريم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c7a7b;
+            --primary-dark: #234e52;
+            --secondary-color: #d69e2e;
+            --bg-light: #f7fafc;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-muted: #718096;
+            --border-radius: 16px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--card-bg); box-shadow: 0 2px 4px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
+        .navbar { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary-color); }
+        .logo span { color: var(--secondary-color); }
+        .nav-links { display: flex; list-style: none; gap: 10px; flex-wrap: wrap; }
+        .nav-item { padding: 8px 14px; border-radius: 20px; cursor: pointer; font-weight: 700; transition: all 0.2s; }
+        .nav-item:hover, .nav-item.active { background-color: var(--primary-color); color: white; }
+        main { max-width: 1200px; margin: 1.5rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+        .hero { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 2rem; border-radius: var(--border-radius); text-align: center; margin-bottom: 2rem; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--card-bg); border-radius: var(--border-radius); padding: 1.5rem; box-shadow: var(--shadow); cursor: pointer; text-align: center; border: 2px solid transparent; transition: all 0.2s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+        .card-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .view-section { display: none; background: var(--card-bg); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        .view-section.active { display: block; }
+        
+        /* Quiz & Board & Game CSS */
+        .btn-action { padding: 10px 18px; border-radius: 8px; border: none; background: var(--primary-color); color: white; cursor: pointer; font-weight: bold; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 15px; }
+        .option-btn { padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: white; font-weight: bold; cursor: pointer; }
+        .option-btn.correct { background: #c6f6d5 !important; border-color: #38a169 !important; }
+        .option-btn.wrong { background: #fed7d7 !important; border-color: #e53e3e !important; }
+        .board-toolbar { display: flex; gap: 10px; background: #edf2f7; padding: 10px; border-radius: 10px 10px 0 0; flex-wrap: wrap; }
+        .canvas-container { border: 2px solid #cbd5e0; border-radius: 0 0 10px 10px; background: white; touch-action: none; }
+        canvas { display: block; width: 100%; height: 400px; cursor: crosshair; }
+        
+        /* Quran Reader */
+        .quran-container { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+        .surah-list { max-height: 500px; overflow-y: auto; background: #f7fafc; padding: 10px; border-radius: 10px; }
+        .surah-item { padding: 8px 12px; background: white; margin-bottom: 6px; border-radius: 6px; cursor: pointer; }
+        .surah-item.active { background: var(--primary-color); color: white; }
+        .ayah-text { font-family: 'Amiri', serif; font-size: 1.6rem; line-height: 2.2; text-align: justify; }
+        .ayah-number { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; background: #edf2f7; font-size: 0.8rem; margin: 0 4px; color: #2d3748; }
+
+        footer { background: #edf2f7; text-align: center; padding: 1.5rem; margin-top: 2rem; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">📖 منصة <span>بناء الأجيال</span></div>
+            <ul class="nav-links">
+                <li class="nav-item active" onclick="switchTab('home')">الرئيسية</li>
+                <li class="nav-item" onclick="switchTab('arabic')">اختبارات العربية</li>
+                <li class="nav-item" onclick="switchTab('quran')">المصحف الشريف</li>
+                <li class="nav-item" onclick="switchTab('board')">السبورة التفاعلية</li>
+                <li class="nav-item" onclick="switchTab('games')">الألعاب التعليمية</li>
+                <li class="nav-item" onclick="switchTab('profile')">ملف الطالب</li>
+                <li class="nav-item" onclick="switchTab('teacher')">لوحة المعلم</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home View -->
+        <section id="view-home" class="view-section active" style="background:transparent; padding:0; box-shadow:none;">
+            <div class="hero">
+                <h1>مرحباً بكم في منصة بناء الأجيال</h1>
+                <p>منصة تفاعلية متكاملة لتعليم اللغة العربية والقرآن الكريم بأسلوب ممتع وموثوق</p>
+            </div>
+            <div class="dashboard-grid">
+                <div class="card" onclick="switchTab('arabic')"><div class="card-icon">📝</div><h3>اختبارات اللغة العربية</h3></div>
+                <div class="card" onclick="switchTab('quran')"><div class="card-icon">📖</div><h3>المصحف الشريف كاملاً</h3></div>
+                <div class="card" onclick="switchTab('board')"><div class="card-icon">🎨</div><h3>السبورة التفاعلية</h3></div>
+                <div class="card" onclick="switchTab('games')"><div class="card-icon">🎮</div><h3>الألعاب التعليمية</h3></div>
+                <div class="card" onclick="switchTab('profile')"><div class="card-icon">🎓</div><h3>ملف الطالب والنتائج</h3></div>
+                <div class="card" onclick="switchTab('teacher')"><div class="card-icon">👨‍🏫</div><h3>لوحة تحكم المعلم</h3></div>
+            </div>
+        </section>
+
+        <!-- Arabic View -->
+        <section id="view-arabic" class="view-section">
+            <h2>📝 اختبارات اللغة العربية</h2>
+            <div id="quiz-container" style="margin-top:20px;"></div>
+        </section>
+
+        <!-- Quran View -->
+        <section id="view-quran" class="view-section">
+            <h2>📖 المصحف الشريف بالرسم العثماني المعتمد</h2>
+            <p style="color:var(--text-muted); margin-bottom:15px;">مصدر النص القرآني: مجمع الملك فهد لطباعة المصحف الشريف</p>
+            <div class="quran-container">
+                <div class="surah-list" id="surahList"></div>
+                <div style="background:#fffdfa; padding:20px; border-radius:10px; border:1px solid #e2e8f0;" id="quranText">
+                    اختر سورة لقراءة الآيات الكريمة...
+                </div>
+            </div>
+        </section>
+
+        <!-- Board View -->
+        <section id="view-board" class="view-section">
+            <h2>🎨 السبورة التفاعلية</h2>
+            <div class="board-toolbar">
+                <button class="btn-action" onclick="setBoardTool('pen')">✏️ قلم</button>
+                <button class="btn-action" onclick="setBoardTool('eraser')">🧹 ممحاة</button>
+                <button class="btn-action" style="background:#e53e3e;" onclick="clearBoard()">🗑️ مسح الكل</button>
+                <input type="color" id="boardColor" value="#2c7a7b" onchange="setBoardColor(this.value)">
+            </div>
+            <div class="canvas-container">
+                <canvas id="boardCanvas"></canvas>
+            </div>
+        </section>
+
+        <!-- Games View -->
+        <section id="view-games" class="view-section">
+            <h2>🎮 الألعاب التعليمية</h2>
+            <div id="gameBox" style="text-align:center; padding:30px; background:#f7fafc; border-radius:10px; margin-top:15px;">
+                <h3>🎯 لعبة صيد الحروف</h3>
+                <p style="margin:15px 0;">اختر الحرف المطابق للحرف: <strong style="font-size:2rem; color:red;">ج</strong></p>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="alert('إجابة صحيحة! 🎉')">ج</button>
+                    <button class="option-btn" onclick="alert('حاول مجدداً')">ح</button>
+                    <button class="option-btn" onclick="alert('حاول مجدداً')">خ</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile View -->
+        <section id="view-profile" class="view-section">
+            <h2>🎓 ملف الطالب</h2>
+            <div style="padding:20px; background:#f0fff4; border-radius:10px; margin-top:15px;">
+                <h3>اسم الطالب: <span id="studentName">أحمد محمد</span></h3>
+                <p style="margin-top:5px;">المستوى الحالي: الثاني | نقاط الألعاب: 120 ⭐</p>
+            </div>
+        </section>
+
+        <!-- Teacher View -->
+        <section id="view-teacher" class="view-section">
+            <h2>👨‍🏫 لوحة تحكم المعلم</h2>
+            <p style="margin-top:15px;">إدارة نتائج وتفاصيل أداء الطلاب المسجلين.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>منصة بناء الأجيال - جميع الحقوق محفوظة © 2026</p>
+    </footer>
+
+    <script>
+        // Navigation Router
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(`view-${tabId}`).classList.add('active');
+        }
+
+        // Arabic Quiz Engine
+        const quizData = [
+            { q: "اختر الحرف الأول من كلمة 'أَسَد':", opts: ["ب", "أ", "ت"], correct: 1 },
+            { q: "ما الحركة على حرف الميم في كلمة 'مُعَلِّم'؟", opts: ["الفتحة", "الضمة", "الكسرة"], correct: 1 }
+        ];
+        function loadQuiz() {
+            const container = document.getElementById('quiz-container');
+            let html = '';
+            quizData.forEach((item, idx) => {
+                html += `<div style="margin-bottom:20px;"><h4>${idx+1}. ${item.q}</h4><div class="options-grid">`;
+                item.opts.forEach((o, oIdx) => {
+                    html += `<button class="option-btn" onclick="checkQuiz(this, ${oIdx === item.correct})">${o}</button>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+        function checkQuiz(btn, isCorrect) {
+            btn.classList.add(isCorrect ? 'correct' : 'wrong');
+        }
+
+        // Board Engine
+        let canvas, ctx, drawing = false, tool = 'pen', color = '#2c7a7b';
+        function initBoard() {
+            canvas = document.getElementById('boardCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = 400;
+            ctx.lineCap = 'round';
+            canvas.addEventListener('mousedown', () => drawing = true);
+            canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+            canvas.addEventListener('mousemove', draw);
+        }
+        function draw(e) {
+            if(!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.strokeStyle = tool === 'pen' ? color : '#ffffff';
+            ctx.lineWidth = tool === 'pen' ? 4 : 20;
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+        function setBoardTool(t) { tool = t; }
+        function setBoardColor(c) { color = c; }
+        function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        // Quran Engine
+        const surahs = [{id: 1, name: "الفاتحة"}, {id: 112, name: "الإخلاص"}, {id: 113, name: "الفلق"}, {id: 114, name: "الناس"}];
+        function initQuran() {
+            const list = document.getElementById('surahList');
+            list.innerHTML = surahs.map(s => `<div class="surah-item" onclick="loadSurah(${s.id})">سورة ${s.name}</div>`).join('');
+            loadSurah(1);
+        }
+        async function loadSurah(id) {
+            const box = document.getElementById('quranText');
+            box.innerHTML = "⏳ جاري جلب النص الموثق بالرسم العثماني...";
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${id}/ar.uthmani`);
+                const data = await res.json();
+                let html = `<h3>سورة ${data.data.name}</h3><div class="ayah-text" style="margin-top:15px;">`;
+                data.data.ayahs.forEach(a => { html += `${a.text} <span class="ayah-number">${a.numberInSurah}</span> `; });
+                html += `</div>`;
+                box.innerHTML = html;
+            } catch(e) { box.innerHTML = "تعذر تحميل النص القرآني. يرجى التحقق من الاتصال بالإنترنت."; }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuiz();
+            initBoard();
+            initQuran();
+        });
+    </script>
+</body>
+</html>
